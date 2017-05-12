@@ -6,6 +6,7 @@ use app\modules\dish\models\Dish;
 use app\modules\dish\models\DishesForm;
 use app\modules\dish\models\DishIngredient;
 use app\modules\dish\models\Ingredient;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 
 /**
@@ -34,14 +35,20 @@ class DefaultController extends Controller
                 if ($dish->isHide) {
                     continue;
                 }
-                
+
                 $dishes[] = [
                     'name'=>$dish->name,
                     'count'=>DishIngredient::find()->andWhere(['dish_id'=>$dish->id])->andWhere(['in','ingredient_id', $dish_form->ingredients])->count(),
                 ];
+
+
             }
 
+
+
         }
+
+        ArrayHelper::multisort($dishes, ['count'], [SORT_DESC]);
         
         return $this->render('index', [
             'ingredients'=>$ingredients,
